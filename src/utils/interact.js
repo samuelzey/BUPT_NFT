@@ -5,7 +5,7 @@ const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey);
 
 const contractABI = require('../contract-abi.json')
-const contractAddress = "0x700dff23F786F7b97Edf1D163aF9dfdD703E860F";
+const contractAddress = "0xEAbefCc264C718242Dc3BC29f9514A1aE17c2e65";
 export const connectWallet = async() =>{
     if(window.ethereum){
       try{
@@ -41,10 +41,7 @@ export const connectWallet = async() =>{
   }
 };
 export const mintNFT = async() => {
-  // const metadata = new Object();
-  // metadata.name = BABUPT_NFT;
-  // metadata.image = 'https://gateway.pinata.cloud/ipfs/QmagVfZgCKXweduFTs83PSCDBET6mCw1sFgY3XoyACWCuJ';
-  // metadata.description = "The Test NFT of BABUPT on Ropsten";
+
   const tokenURI = 'https://gateway.pinata.cloud/ipfs/QmeJ7EhmGsaBMcDUNdo625axzWr9st6yrU7hkdmcL3KSV4';
 //我们假设tokenURI就是nft-metadata.json的地址
 window.contract = await new web3.eth.Contract(contractABI, contractAddress);
@@ -53,7 +50,7 @@ window.contract = await new web3.eth.Contract(contractABI, contractAddress);
  const transactionParameters = {
         to: contractAddress, // Required except during contract publications.
         from: window.ethereum.selectedAddress, // must match user's active address.
-        'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress, tokenURI).encodeABI()//make call to NFT smart contract
+        'data': window.contract.methods.preSale().encodeABI()//make call to NFT smart contract
  };
 
 //sign the transaction via Metamask
@@ -65,7 +62,7 @@ window.contract = await new web3.eth.Contract(contractABI, contractAddress);
         });
     return {
         success: true,
-        status: "✅ 成功！在Etherscan上查看: https://ropsten.etherscan.io/tx/" + txHash
+        status: "✅ 成功！在Etherscan上查看: https://goerli.etherscan.io/tx/" + txHash
     }
  } catch (error) {
     return {
@@ -74,6 +71,22 @@ window.contract = await new web3.eth.Contract(contractABI, contractAddress);
     }
 
  }
+
+};
+
+export const ifWhilisted = async() => {
+
+  window.contract = await new web3.eth.Contract(contractABI, contractAddress);
+  const checkAddress = window.ethereum.selectedAddress;
+
+  const message = await window.contract.methods.isAllowlistAddress(checkAddress).call();
+  console.log(message);
+  if(message == true)return{
+      status: '恭喜！你在白名单中！'
+    }
+  if(message == false)return{
+    status: '对不起，你不在白名单里面'
+  }
 
 };
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {connectWallet,getCurrentWalletConnected,mintNFT} from "./utils/interact.js";
+import {connectWallet,getCurrentWalletConnected,mintNFT,ifWhilisted} from "./utils/interact.js";
 
 const Minter = (props) => {
 
@@ -51,10 +51,10 @@ setWallet(walletResponse.address);
     const { status } = await mintNFT();
     setStatus(status);
   };
-  // const onCheckPressed = async () => {
-  //   const { status } = await ifWhilisted();
-  //   setStatus(status);
-  // };
+  const onCheckPressed = async () => {
+    const { status } = await ifWhilisted();
+    setStatus(status);
+  };
 
   return (
     <div className="Minter">
@@ -70,7 +70,7 @@ setWallet(walletResponse.address);
       </button>
 
       <br></br>
-      <h1 id="title">🧙‍♂️ 北邮区块链协会创世NFT领取页面</h1>
+      <h1 id="title">🧙‍♂️ 北邮区块链协会NFT领取</h1>
       <p>
         只有白名单内的地址可以领取NFT，申请<a href="./#">点击这里</a>
       </p>
@@ -85,7 +85,7 @@ setWallet(walletResponse.address);
         </div>
       </form>
       <div>
-      <button id="checkIfEligible">
+      <button id="checkIfEligible"onClick={onCheckPressed}>
         资格查询
       </button>
       </div>
